@@ -13,10 +13,6 @@ entity opfb_fir_cfg is
 port (
     ap_clk : IN STD_LOGIC;
     ap_rst_n : IN STD_LOGIC;
-    ap_start : IN STD_LOGIC;
-    ap_done : OUT STD_LOGIC;
-    ap_idle : OUT STD_LOGIC;
-    ap_ready : OUT STD_LOGIC;
     config_r_TDATA : OUT STD_LOGIC_VECTOR (7 downto 0);
     config_r_TVALID : OUT STD_LOGIC;
     config_r_TREADY : IN STD_LOGIC;
@@ -27,41 +23,45 @@ end;
 architecture behav of opfb_fir_cfg is 
     attribute CORE_GENERATION_INFO : STRING;
     attribute CORE_GENERATION_INFO of behav : architecture is
-    "opfb_fir_cfg,hls_ip_2019_2_1,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu28dr-ffvg1517-2-e,HLS_INPUT_CLOCK=1.818000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=0.912250,HLS_SYN_LAT=1025,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=23,HLS_SYN_LUT=84,HLS_VERSION=2019_2_1}";
+    "opfb_fir_cfg,hls_ip_2019_2_1,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu28dr-ffvg1517-2-e,HLS_INPUT_CLOCK=1.818000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=0.912250,HLS_SYN_LAT=513,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=25,HLS_SYN_LUT=86,HLS_VERSION=2019_2_1}";
     constant ap_const_logic_1 : STD_LOGIC := '1';
     constant ap_const_logic_0 : STD_LOGIC := '0';
     constant ap_ST_fsm_state1 : STD_LOGIC_VECTOR (2 downto 0) := "001";
     constant ap_ST_fsm_state2 : STD_LOGIC_VECTOR (2 downto 0) := "010";
     constant ap_ST_fsm_state3 : STD_LOGIC_VECTOR (2 downto 0) := "100";
-    constant ap_const_lv32_0 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000000";
+    constant ap_const_lv1_1 : STD_LOGIC_VECTOR (0 downto 0) := "1";
     constant ap_const_boolean_1 : BOOLEAN := true;
     constant ap_const_lv32_1 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000001";
     constant ap_const_lv1_0 : STD_LOGIC_VECTOR (0 downto 0) := "0";
     constant ap_const_lv32_2 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000010";
+    constant ap_const_lv32_0 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000000";
     constant ap_const_lv10_0 : STD_LOGIC_VECTOR (9 downto 0) := "0000000000";
     constant ap_const_lv10_200 : STD_LOGIC_VECTOR (9 downto 0) := "1000000000";
     constant ap_const_lv10_1 : STD_LOGIC_VECTOR (9 downto 0) := "0000000001";
     constant ap_const_lv32_8 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000001000";
     constant ap_const_lv10_1FF : STD_LOGIC_VECTOR (9 downto 0) := "0111111111";
-    constant ap_const_lv1_1 : STD_LOGIC_VECTOR (0 downto 0) := "1";
 
     signal ap_rst_n_inv : STD_LOGIC;
+    signal run : STD_LOGIC_VECTOR (0 downto 0) := "1";
+    signal config_r_TDATA_blk_n : STD_LOGIC;
     signal ap_CS_fsm : STD_LOGIC_VECTOR (2 downto 0) := "001";
     attribute fsm_encoding : string;
     attribute fsm_encoding of ap_CS_fsm : signal is "none";
-    signal ap_CS_fsm_state1 : STD_LOGIC;
-    attribute fsm_encoding of ap_CS_fsm_state1 : signal is "none";
-    signal config_r_TDATA_blk_n : STD_LOGIC;
     signal ap_CS_fsm_state2 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state2 : signal is "none";
-    signal icmp_ln7_fu_61_p2 : STD_LOGIC_VECTOR (0 downto 0);
+    signal run_load_reg_107 : STD_LOGIC_VECTOR (0 downto 0);
+    signal icmp_ln9_fu_71_p2 : STD_LOGIC_VECTOR (0 downto 0);
     signal ap_CS_fsm_state3 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state3 : signal is "none";
-    signal i_fu_67_p2 : STD_LOGIC_VECTOR (9 downto 0);
-    signal i_reg_94 : STD_LOGIC_VECTOR (9 downto 0);
+    signal run_load_load_fu_67_p1 : STD_LOGIC_VECTOR (0 downto 0);
+    signal ap_CS_fsm_state1 : STD_LOGIC;
+    attribute fsm_encoding of ap_CS_fsm_state1 : signal is "none";
+    signal i_fu_77_p2 : STD_LOGIC_VECTOR (9 downto 0);
+    signal i_reg_114 : STD_LOGIC_VECTOR (9 downto 0);
     signal regslice_reverse_config_data_V_U_apdone_blk : STD_LOGIC;
+    signal ap_predicate_op19_write_state2 : BOOLEAN;
     signal ap_block_state2_io : BOOLEAN;
-    signal i_0_reg_50 : STD_LOGIC_VECTOR (9 downto 0);
+    signal i_0_reg_56 : STD_LOGIC_VECTOR (9 downto 0);
     signal ap_NS_fsm : STD_LOGIC_VECTOR (2 downto 0);
     signal config_r_TDATA_int : STD_LOGIC_VECTOR (7 downto 0);
     signal config_r_TVALID_int : STD_LOGIC;
@@ -134,38 +134,50 @@ begin
     end process;
 
 
-    i_0_reg_50_assign_proc : process (ap_clk)
+    i_0_reg_56_assign_proc : process (ap_clk)
     begin
         if (ap_clk'event and ap_clk = '1') then
-            if (((ap_const_logic_1 = ap_CS_fsm_state3) and (config_r_TREADY_int = ap_const_logic_1))) then 
-                i_0_reg_50 <= i_reg_94;
-            elsif (((ap_const_logic_1 = ap_CS_fsm_state1) and (ap_start = ap_const_logic_1))) then 
-                i_0_reg_50 <= ap_const_lv10_0;
+            if (((ap_const_logic_1 = ap_CS_fsm_state1) and (run_load_load_fu_67_p1 = ap_const_lv1_1))) then 
+                i_0_reg_56 <= ap_const_lv10_0;
+            elsif (((ap_const_logic_1 = ap_CS_fsm_state3) and (config_r_TREADY_int = ap_const_logic_1))) then 
+                i_0_reg_56 <= i_reg_114;
             end if; 
         end if;
     end process;
     process (ap_clk)
     begin
         if (ap_clk'event and ap_clk = '1') then
-            if ((not(((ap_const_boolean_1 = ap_block_state2_io) or (regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1))) and (ap_const_logic_1 = ap_CS_fsm_state2))) then
-                i_reg_94 <= i_fu_67_p2;
+            if ((not(((regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1) or (ap_const_boolean_1 = ap_block_state2_io))) and (ap_const_logic_1 = ap_CS_fsm_state2) and (run_load_reg_107 = ap_const_lv1_1))) then
+                i_reg_114 <= i_fu_77_p2;
+            end if;
+        end if;
+    end process;
+    process (ap_clk)
+    begin
+        if (ap_clk'event and ap_clk = '1') then
+            if ((not(((regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1) or (ap_const_boolean_1 = ap_block_state2_io))) and (ap_const_logic_1 = ap_CS_fsm_state2) and (icmp_ln9_fu_71_p2 = ap_const_lv1_1) and (run_load_reg_107 = ap_const_lv1_1))) then
+                run <= ap_const_lv1_0;
+            end if;
+        end if;
+    end process;
+    process (ap_clk)
+    begin
+        if (ap_clk'event and ap_clk = '1') then
+            if ((ap_const_logic_1 = ap_CS_fsm_state1)) then
+                run_load_reg_107 <= run;
             end if;
         end if;
     end process;
 
-    ap_NS_fsm_assign_proc : process (ap_start, ap_CS_fsm, ap_CS_fsm_state1, ap_CS_fsm_state2, icmp_ln7_fu_61_p2, ap_CS_fsm_state3, regslice_reverse_config_data_V_U_apdone_blk, ap_block_state2_io, config_r_TREADY_int)
+    ap_NS_fsm_assign_proc : process (ap_CS_fsm, ap_CS_fsm_state2, run_load_reg_107, icmp_ln9_fu_71_p2, ap_CS_fsm_state3, regslice_reverse_config_data_V_U_apdone_blk, ap_block_state2_io, config_r_TREADY_int)
     begin
         case ap_CS_fsm is
             when ap_ST_fsm_state1 => 
-                if (((ap_const_logic_1 = ap_CS_fsm_state1) and (ap_start = ap_const_logic_1))) then
-                    ap_NS_fsm <= ap_ST_fsm_state2;
-                else
-                    ap_NS_fsm <= ap_ST_fsm_state1;
-                end if;
+                ap_NS_fsm <= ap_ST_fsm_state2;
             when ap_ST_fsm_state2 => 
-                if ((not(((ap_const_boolean_1 = ap_block_state2_io) or (regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1))) and (icmp_ln7_fu_61_p2 = ap_const_lv1_1) and (ap_const_logic_1 = ap_CS_fsm_state2))) then
+                if ((not(((regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1) or (ap_const_boolean_1 = ap_block_state2_io))) and (ap_const_logic_1 = ap_CS_fsm_state2) and ((run_load_reg_107 = ap_const_lv1_0) or (icmp_ln9_fu_71_p2 = ap_const_lv1_1)))) then
                     ap_NS_fsm <= ap_ST_fsm_state1;
-                elsif ((not(((ap_const_boolean_1 = ap_block_state2_io) or (regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1))) and (icmp_ln7_fu_61_p2 = ap_const_lv1_0) and (ap_const_logic_1 = ap_CS_fsm_state2))) then
+                elsif ((not(((regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1) or (ap_const_boolean_1 = ap_block_state2_io))) and (icmp_ln9_fu_71_p2 = ap_const_lv1_0) and (ap_const_logic_1 = ap_CS_fsm_state2) and (run_load_reg_107 = ap_const_lv1_1))) then
                     ap_NS_fsm <= ap_ST_fsm_state3;
                 else
                     ap_NS_fsm <= ap_ST_fsm_state2;
@@ -184,39 +196,15 @@ begin
     ap_CS_fsm_state2 <= ap_CS_fsm(1);
     ap_CS_fsm_state3 <= ap_CS_fsm(2);
 
-    ap_block_state2_io_assign_proc : process(icmp_ln7_fu_61_p2, config_r_TREADY_int)
+    ap_block_state2_io_assign_proc : process(ap_predicate_op19_write_state2, config_r_TREADY_int)
     begin
-                ap_block_state2_io <= ((icmp_ln7_fu_61_p2 = ap_const_lv1_0) and (config_r_TREADY_int = ap_const_logic_0));
+                ap_block_state2_io <= ((config_r_TREADY_int = ap_const_logic_0) and (ap_predicate_op19_write_state2 = ap_const_boolean_1));
     end process;
 
 
-    ap_done_assign_proc : process(ap_CS_fsm_state2, icmp_ln7_fu_61_p2, regslice_reverse_config_data_V_U_apdone_blk, ap_block_state2_io)
+    ap_predicate_op19_write_state2_assign_proc : process(run_load_reg_107, icmp_ln9_fu_71_p2)
     begin
-        if ((not(((ap_const_boolean_1 = ap_block_state2_io) or (regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1))) and (icmp_ln7_fu_61_p2 = ap_const_lv1_1) and (ap_const_logic_1 = ap_CS_fsm_state2))) then 
-            ap_done <= ap_const_logic_1;
-        else 
-            ap_done <= ap_const_logic_0;
-        end if; 
-    end process;
-
-
-    ap_idle_assign_proc : process(ap_start, ap_CS_fsm_state1)
-    begin
-        if (((ap_start = ap_const_logic_0) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
-            ap_idle <= ap_const_logic_1;
-        else 
-            ap_idle <= ap_const_logic_0;
-        end if; 
-    end process;
-
-
-    ap_ready_assign_proc : process(ap_CS_fsm_state2, icmp_ln7_fu_61_p2, regslice_reverse_config_data_V_U_apdone_blk, ap_block_state2_io)
-    begin
-        if ((not(((ap_const_boolean_1 = ap_block_state2_io) or (regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1))) and (icmp_ln7_fu_61_p2 = ap_const_lv1_1) and (ap_const_logic_1 = ap_CS_fsm_state2))) then 
-            ap_ready <= ap_const_logic_1;
-        else 
-            ap_ready <= ap_const_logic_0;
-        end if; 
+                ap_predicate_op19_write_state2 <= ((icmp_ln9_fu_71_p2 = ap_const_lv1_0) and (run_load_reg_107 = ap_const_lv1_1));
     end process;
 
 
@@ -226,28 +214,29 @@ begin
     end process;
 
 
-    config_r_TDATA_blk_n_assign_proc : process(ap_CS_fsm_state2, icmp_ln7_fu_61_p2, ap_CS_fsm_state3, config_r_TREADY_int)
+    config_r_TDATA_blk_n_assign_proc : process(ap_CS_fsm_state2, run_load_reg_107, icmp_ln9_fu_71_p2, ap_CS_fsm_state3, config_r_TREADY_int)
     begin
-        if (((ap_const_logic_1 = ap_CS_fsm_state3) or ((icmp_ln7_fu_61_p2 = ap_const_lv1_0) and (ap_const_logic_1 = ap_CS_fsm_state2)))) then 
+        if (((ap_const_logic_1 = ap_CS_fsm_state3) or ((icmp_ln9_fu_71_p2 = ap_const_lv1_0) and (ap_const_logic_1 = ap_CS_fsm_state2) and (run_load_reg_107 = ap_const_lv1_1)))) then 
             config_r_TDATA_blk_n <= config_r_TREADY_int;
         else 
             config_r_TDATA_blk_n <= ap_const_logic_1;
         end if; 
     end process;
 
-    config_r_TDATA_int <= i_0_reg_50(8 downto 1);
-    config_r_TLAST_int <= "1" when (i_0_reg_50 = ap_const_lv10_1FF) else "0";
+    config_r_TDATA_int <= i_0_reg_56(8 downto 1);
+    config_r_TLAST_int <= "1" when (i_0_reg_56 = ap_const_lv10_1FF) else "0";
     config_r_TVALID <= regslice_reverse_config_data_V_U_vld_out;
 
-    config_r_TVALID_int_assign_proc : process(ap_CS_fsm_state2, icmp_ln7_fu_61_p2, regslice_reverse_config_data_V_U_apdone_blk, ap_block_state2_io)
+    config_r_TVALID_int_assign_proc : process(ap_CS_fsm_state2, regslice_reverse_config_data_V_U_apdone_blk, ap_predicate_op19_write_state2, ap_block_state2_io)
     begin
-        if ((not(((ap_const_boolean_1 = ap_block_state2_io) or (regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1))) and (icmp_ln7_fu_61_p2 = ap_const_lv1_0) and (ap_const_logic_1 = ap_CS_fsm_state2))) then 
+        if ((not(((regslice_reverse_config_data_V_U_apdone_blk = ap_const_logic_1) or (ap_const_boolean_1 = ap_block_state2_io))) and (ap_const_logic_1 = ap_CS_fsm_state2) and (ap_predicate_op19_write_state2 = ap_const_boolean_1))) then 
             config_r_TVALID_int <= ap_const_logic_1;
         else 
             config_r_TVALID_int <= ap_const_logic_0;
         end if; 
     end process;
 
-    i_fu_67_p2 <= std_logic_vector(unsigned(i_0_reg_50) + unsigned(ap_const_lv10_1));
-    icmp_ln7_fu_61_p2 <= "1" when (i_0_reg_50 = ap_const_lv10_200) else "0";
+    i_fu_77_p2 <= std_logic_vector(unsigned(i_0_reg_56) + unsigned(ap_const_lv10_1));
+    icmp_ln9_fu_71_p2 <= "1" when (i_0_reg_56 = ap_const_lv10_200) else "0";
+    run_load_load_fu_67_p1 <= run;
 end behav;

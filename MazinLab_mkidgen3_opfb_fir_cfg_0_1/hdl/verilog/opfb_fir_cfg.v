@@ -7,15 +7,11 @@
 
 `timescale 1 ns / 1 ps 
 
-(* CORE_GENERATION_INFO="opfb_fir_cfg,hls_ip_2019_2_1,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu28dr-ffvg1517-2-e,HLS_INPUT_CLOCK=1.818000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=0.912250,HLS_SYN_LAT=1025,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=23,HLS_SYN_LUT=84,HLS_VERSION=2019_2_1}" *)
+(* CORE_GENERATION_INFO="opfb_fir_cfg,hls_ip_2019_2_1,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu28dr-ffvg1517-2-e,HLS_INPUT_CLOCK=1.818000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=0.912250,HLS_SYN_LAT=513,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=25,HLS_SYN_LUT=86,HLS_VERSION=2019_2_1}" *)
 
 module opfb_fir_cfg (
         ap_clk,
         ap_rst_n,
-        ap_start,
-        ap_done,
-        ap_idle,
-        ap_ready,
         config_r_TDATA,
         config_r_TVALID,
         config_r_TREADY,
@@ -28,31 +24,27 @@ parameter    ap_ST_fsm_state3 = 3'd4;
 
 input   ap_clk;
 input   ap_rst_n;
-input   ap_start;
-output   ap_done;
-output   ap_idle;
-output   ap_ready;
 output  [7:0] config_r_TDATA;
 output   config_r_TVALID;
 input   config_r_TREADY;
 output  [0:0] config_r_TLAST;
 
-reg ap_done;
-reg ap_idle;
-reg ap_ready;
-
  reg    ap_rst_n_inv;
-(* fsm_encoding = "none" *) reg   [2:0] ap_CS_fsm;
-wire    ap_CS_fsm_state1;
+reg   [0:0] run;
 reg    config_r_TDATA_blk_n;
+(* fsm_encoding = "none" *) reg   [2:0] ap_CS_fsm;
 wire    ap_CS_fsm_state2;
-wire   [0:0] icmp_ln7_fu_61_p2;
+reg   [0:0] run_load_reg_107;
+wire   [0:0] icmp_ln9_fu_71_p2;
 wire    ap_CS_fsm_state3;
-wire   [9:0] i_fu_67_p2;
-reg   [9:0] i_reg_94;
+wire   [0:0] run_load_load_fu_67_p1;
+wire    ap_CS_fsm_state1;
+wire   [9:0] i_fu_77_p2;
+reg   [9:0] i_reg_114;
 wire    regslice_reverse_config_data_V_U_apdone_blk;
+reg    ap_predicate_op19_write_state2;
 reg    ap_block_state2_io;
-reg   [9:0] i_0_reg_50;
+reg   [9:0] i_0_reg_56;
 reg   [2:0] ap_NS_fsm;
 wire   [7:0] config_r_TDATA_int;
 reg    config_r_TVALID_int;
@@ -65,6 +57,7 @@ wire    regslice_reverse_config_last_V_U_vld_out;
 
 // power-on initialization
 initial begin
+#0 run = 1'd1;
 #0 ap_CS_fsm = 3'd1;
 end
 
@@ -105,45 +98,33 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state3) & (config_r_TREADY_int == 1'b1))) begin
-        i_0_reg_50 <= i_reg_94;
-    end else if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b1))) begin
-        i_0_reg_50 <= 10'd0;
+    if (((1'b1 == ap_CS_fsm_state1) & (run_load_load_fu_67_p1 == 1'd1))) begin
+        i_0_reg_56 <= 10'd0;
+    end else if (((1'b1 == ap_CS_fsm_state3) & (config_r_TREADY_int == 1'b1))) begin
+        i_0_reg_56 <= i_reg_114;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((~((1'b1 == ap_block_state2_io) | (regslice_reverse_config_data_V_U_apdone_blk == 1'b1)) & (1'b1 == ap_CS_fsm_state2))) begin
-        i_reg_94 <= i_fu_67_p2;
+    if ((~((regslice_reverse_config_data_V_U_apdone_blk == 1'b1) | (1'b1 == ap_block_state2_io)) & (1'b1 == ap_CS_fsm_state2) & (run_load_reg_107 == 1'd1))) begin
+        i_reg_114 <= i_fu_77_p2;
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if ((~((regslice_reverse_config_data_V_U_apdone_blk == 1'b1) | (1'b1 == ap_block_state2_io)) & (1'b1 == ap_CS_fsm_state2) & (icmp_ln9_fu_71_p2 == 1'd1) & (run_load_reg_107 == 1'd1))) begin
+        run <= 1'd0;
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if ((1'b1 == ap_CS_fsm_state1)) begin
+        run_load_reg_107 <= run;
     end
 end
 
 always @ (*) begin
-    if ((~((1'b1 == ap_block_state2_io) | (regslice_reverse_config_data_V_U_apdone_blk == 1'b1)) & (icmp_ln7_fu_61_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state2))) begin
-        ap_done = 1'b1;
-    end else begin
-        ap_done = 1'b0;
-    end
-end
-
-always @ (*) begin
-    if (((ap_start == 1'b0) & (1'b1 == ap_CS_fsm_state1))) begin
-        ap_idle = 1'b1;
-    end else begin
-        ap_idle = 1'b0;
-    end
-end
-
-always @ (*) begin
-    if ((~((1'b1 == ap_block_state2_io) | (regslice_reverse_config_data_V_U_apdone_blk == 1'b1)) & (icmp_ln7_fu_61_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state2))) begin
-        ap_ready = 1'b1;
-    end else begin
-        ap_ready = 1'b0;
-    end
-end
-
-always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state3) | ((icmp_ln7_fu_61_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state2)))) begin
+    if (((1'b1 == ap_CS_fsm_state3) | ((icmp_ln9_fu_71_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state2) & (run_load_reg_107 == 1'd1)))) begin
         config_r_TDATA_blk_n = config_r_TREADY_int;
     end else begin
         config_r_TDATA_blk_n = 1'b1;
@@ -151,7 +132,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if ((~((1'b1 == ap_block_state2_io) | (regslice_reverse_config_data_V_U_apdone_blk == 1'b1)) & (icmp_ln7_fu_61_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state2))) begin
+    if ((~((regslice_reverse_config_data_V_U_apdone_blk == 1'b1) | (1'b1 == ap_block_state2_io)) & (1'b1 == ap_CS_fsm_state2) & (ap_predicate_op19_write_state2 == 1'b1))) begin
         config_r_TVALID_int = 1'b1;
     end else begin
         config_r_TVALID_int = 1'b0;
@@ -161,16 +142,12 @@ end
 always @ (*) begin
     case (ap_CS_fsm)
         ap_ST_fsm_state1 : begin
-            if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b1))) begin
-                ap_NS_fsm = ap_ST_fsm_state2;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state1;
-            end
+            ap_NS_fsm = ap_ST_fsm_state2;
         end
         ap_ST_fsm_state2 : begin
-            if ((~((1'b1 == ap_block_state2_io) | (regslice_reverse_config_data_V_U_apdone_blk == 1'b1)) & (icmp_ln7_fu_61_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state2))) begin
+            if ((~((regslice_reverse_config_data_V_U_apdone_blk == 1'b1) | (1'b1 == ap_block_state2_io)) & (1'b1 == ap_CS_fsm_state2) & ((run_load_reg_107 == 1'd0) | (icmp_ln9_fu_71_p2 == 1'd1)))) begin
                 ap_NS_fsm = ap_ST_fsm_state1;
-            end else if ((~((1'b1 == ap_block_state2_io) | (regslice_reverse_config_data_V_U_apdone_blk == 1'b1)) & (icmp_ln7_fu_61_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state2))) begin
+            end else if ((~((regslice_reverse_config_data_V_U_apdone_blk == 1'b1) | (1'b1 == ap_block_state2_io)) & (icmp_ln9_fu_71_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state2) & (run_load_reg_107 == 1'd1))) begin
                 ap_NS_fsm = ap_ST_fsm_state3;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state2;
@@ -196,21 +173,27 @@ assign ap_CS_fsm_state2 = ap_CS_fsm[32'd1];
 assign ap_CS_fsm_state3 = ap_CS_fsm[32'd2];
 
 always @ (*) begin
-    ap_block_state2_io = ((icmp_ln7_fu_61_p2 == 1'd0) & (config_r_TREADY_int == 1'b0));
+    ap_block_state2_io = ((config_r_TREADY_int == 1'b0) & (ap_predicate_op19_write_state2 == 1'b1));
+end
+
+always @ (*) begin
+    ap_predicate_op19_write_state2 = ((icmp_ln9_fu_71_p2 == 1'd0) & (run_load_reg_107 == 1'd1));
 end
 
 always @ (*) begin
     ap_rst_n_inv = ~ap_rst_n;
 end
 
-assign config_r_TDATA_int = {{i_0_reg_50[8:1]}};
+assign config_r_TDATA_int = {{i_0_reg_56[8:1]}};
 
-assign config_r_TLAST_int = ((i_0_reg_50 == 10'd511) ? 1'b1 : 1'b0);
+assign config_r_TLAST_int = ((i_0_reg_56 == 10'd511) ? 1'b1 : 1'b0);
 
 assign config_r_TVALID = regslice_reverse_config_data_V_U_vld_out;
 
-assign i_fu_67_p2 = (i_0_reg_50 + 10'd1);
+assign i_fu_77_p2 = (i_0_reg_56 + 10'd1);
 
-assign icmp_ln7_fu_61_p2 = ((i_0_reg_50 == 10'd512) ? 1'b1 : 1'b0);
+assign icmp_ln9_fu_71_p2 = ((i_0_reg_56 == 10'd512) ? 1'b1 : 1'b0);
+
+assign run_load_load_fu_67_p1 = run;
 
 endmodule //opfb_fir_cfg
