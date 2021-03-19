@@ -1,10 +1,6 @@
-#include "ap_int.h"
-
-typedef struct {
-	ap_uint<8> data;
-	ap_uint<1> last;
-} axisconfig_t;
-
+#include "axi.h"
+#include "hls_stream.h"
 #define N_CHAN 512
+typedef ap_axiu<8,0,0,0> cfg_t;
 
-void opfb_fir_cfg(axisconfig_t config[N_CHAN]);
+void opfb_fir_cfg(hls::stream<cfg_t> &config);
